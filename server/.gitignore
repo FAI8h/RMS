@@ -4,14 +4,14 @@
 !.env.example
 
 #Scripts
-Scripts/
+# Scripts/
 
 # Installed packages and generated dependency lockfile
 node_modules/
 package-lock.json
 
 # Local utility scripts
-scripts/
+# scripts/
 
 # Logs
 logs
