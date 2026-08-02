@@ -1,4 +1,4 @@
-import jwt from jsonwebtoken
+import jwt  from "jsonwebtoken";
 import Teacher from "../models/teacher.js";
 import Admin from "../models/admin.js";
 
