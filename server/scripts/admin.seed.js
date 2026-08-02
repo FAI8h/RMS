@@ -4,10 +4,8 @@ import {connectDB} from '../src/config/db.js'; // Adjust path if your structure 
 import Admin from '../src/models/admin.js';
 import Teacher from '../src/models/teacher.js';
 
-dotenv.config({
-    path:'../.env'
-});
-connectDB();
+dotenv.config();
+await connectDB();
 console.log("env : ", process.env.MONGO_URI);
 
 

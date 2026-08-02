@@ -5,10 +5,8 @@ import {connectDB} from '../src/config/db.js'; // Adjust path if needed based on
 import Subject from '../src/models/subject.js';
 import Student from '../src/models/student.js';
 
-dotenv.config({
-    path:'../.env'
-});
-connectDB();
+dotenv.config();
+await connectDB();
 
 const seedData = async () => {
   try {
