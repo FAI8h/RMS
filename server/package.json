@@ -8,6 +8,7 @@
     "dev": "node bootstrap.js",
     "docker:up": "docker compose up -d",
     "seed:admin": "node ./scripts/admin.seed.js",
+    "seed:exam": "node ./scripts/exam.seed.js",
     "seed:student": "node ./scripts/student.seed.js"
   },
   "keywords": [],
