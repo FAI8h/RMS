@@ -6,6 +6,15 @@ import Teacher from '../models/teacher.js';
 // @desc    Login user (Admin or Teacher)
 // @route   POST /api/auth/login
 // @access  Public
+
+const options = {
+  httpOnly: true,
+  // Browsers reject Secure cookies over plain HTTP, so only enable it in
+  // production (where the API should be served over HTTPS).
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  path: '/',
+};
 export const login = async (req, res) => {
   try {
     const { email, password, name, accessCode } = req.body;
@@ -24,11 +33,13 @@ export const login = async (req, res) => {
         { expiresIn: process.env.ACCESS_EXPIRY }
       );
 
-      return res.status(200).json({
+      return res
+        .status(200)
+        .cookie("accessToken",token,options)
+        .json({
         _id: teacher._id,
         name: teacher.name,
-        role: teacher.role,
-        token
+        role: teacher.role
       });
     }
 
@@ -51,12 +62,14 @@ export const login = async (req, res) => {
         { expiresIn: process.env.ACCESS_EXPIRY }
       );
 
-      return res.status(200).json({
-        _id: admin._id,
-        name: admin.name,
-        role: admin.role,
-        token
-      });
+      return res
+        .status(200)
+        .cookie('accessToken', token, options)
+        .json({
+          _id: admin._id,
+          name: admin.name,
+          role: admin.role,
+        });
     }
 
     // If neither flow is triggered

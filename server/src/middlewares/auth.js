@@ -3,11 +3,13 @@ import Teacher from "../models/teacher.js";
 import Admin from "../models/admin.js";
 
 const protect = async (req, res, next) => {
-  let token;
-  
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  const authorization = req.headers.authorization;
+  const token = authorization?.startsWith('Bearer ')
+    ? authorization.split(' ')[1]
+    : req.cookies?.accessToken;
+
+  if (token) {
     try {
-      token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
       
       // Attach user to request (check both Admin and Teacher collections)
@@ -19,15 +21,13 @@ const protect = async (req, res, next) => {
       }
       
       req.user = user;
-      next();
+      return next();
     } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
   }
 
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
+  return res.status(401).json({ message: 'Not authorized, no token' });
 };
 
 // Middleware to restrict routes to Admins only

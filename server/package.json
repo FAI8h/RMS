@@ -4,12 +4,11 @@
   "description": "",
   "main": "bootstrap.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bootstrap.js",
     "dev": "node bootstrap.js",
-    "docker:up":"docker compose up -d",
-    "seed:admin":"node ./scripts/admin.seed.js",
-    "seed:student":"node ./scripts/student.seed.js"
+    "docker:up": "docker compose up -d",
+    "seed:admin": "node ./scripts/admin.seed.js",
+    "seed:student": "node ./scripts/student.seed.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +16,8 @@
   "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cookie": "^2.0.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
