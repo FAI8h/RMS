@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import authRoutes from './src/routes/auth.routes.js';
 import studentRoutes from './src/routes/student.routes.js';
 import masterRoutes from './src/routes/master.routes.js';
+import teacherRoutes from './src/routes/teacher.routes.js';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api', masterRoutes);
+app.use('/api/teacher', teacherRoutes);
 
 app.get('/', (req, res) => {
   res.send('School Result Management System API is running...');
