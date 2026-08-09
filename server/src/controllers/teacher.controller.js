@@ -5,7 +5,7 @@ import Teacher from '../models/teacher.js';
 // @access  Private/Admin
 export const createTeacher = async (req, res) => {
   try {
-    const { name, accessCode } = req.body;
+    const { name, accessCode, role } = req.body;
 
     if (!name || !accessCode) {
       return res.status(400).json({ message: 'Please provide a name and an access code' });
@@ -17,7 +17,7 @@ export const createTeacher = async (req, res) => {
       return res.status(400).json({ message: 'Access code already in use' });
     }
 
-    const teacher = await Teacher.create({ name, accessCode });
+    const teacher = await Teacher.create({ name, accessCode, role : role ? role : "Teacher" });
     
     res.status(201).json({
       success: true,
@@ -61,3 +61,17 @@ export const deleteTeacher = async (req, res) => {
     res.status(500).json({ success: false, message: 'Teacher not found'});
   }
 };
+
+// @desc    Delete all teacher (Revoke access)
+//! @route  DELETE not decided yet
+// @access  Private/Admin
+export const deleteAllTeacher = async (req, res) => {
+  try {
+    const teacher = await Teacher.deleteMany({});
+    res
+      .status(200)
+      .json({ success: teacher ?? true, message: "removed" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Teacher not found" });
+  }
+}
