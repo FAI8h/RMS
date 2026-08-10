@@ -19,4 +19,4 @@ class ApiError extends Error {
     }
 }
 
-export const ApiError;
+export const {ApiError};
