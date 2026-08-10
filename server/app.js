@@ -24,7 +24,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api', masterRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/results', resultRoutes);
-app.use('/api/report-card', reportCardRoutes);
+app.use('/api/report-cards', reportCardRoutes);
 
 app.get('/', (req, res) => {
   res.send('School Result Management System API is running...');
