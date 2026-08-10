@@ -57,7 +57,7 @@ export const submitBulkMarks = async (req, res) => {
 // @route   GET /api/results
 // @access  Private
 export const getResults = async (req, res) => {
-    console.log("getting result : ", req.query);
+    // console.log("getting result : ", req.query);
     
   try {
     const { exam, subjectId, studentId } = req.query;

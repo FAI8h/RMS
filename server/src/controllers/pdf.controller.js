@@ -10,7 +10,7 @@ export const generatePDFReportCard = async (req, res) => {
   try {
     const { studentId } = req.params;
       const { exam } = req.query;
-      console.log("req : ", req.query);
+    //   console.log("req : ", req.query);
       
 
     // 1. Fetch all necessary data
