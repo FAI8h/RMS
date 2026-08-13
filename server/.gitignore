@@ -5,7 +5,6 @@
 
 #Scripts
 # Scripts/
-
 # Installed packages and generated dependency lockfile
 node_modules/
 package-lock.json
@@ -130,3 +129,6 @@ dist
 .pnp.*
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
+
+# Generated reports
+generated-reports/
