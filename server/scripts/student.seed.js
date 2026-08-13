@@ -1,40 +1,17 @@
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import {connectDB} from '../src/config/db.js'; // Adjust path if needed based on your new structure
-import Subject from '../src/models/subject.js';
 import Student from '../src/models/student.js';
 
-dotenv.config();
+dotenv.config({
+  path: '../.env'
+});
 await connectDB();
 
 const seedData = async () => {
   try {
     console.log('Clearing existing data...');
-    await Subject.deleteMany({});
     await Student.deleteMany({});
-
-
-    // 3. Seed Subjects
-    const subjects = await Subject.insertMany([
-      { 
-        name: 'Mathematics', 
-        code: 'MATH10', 
-        maxTheoryMarks: 80, 
-        maxPracticalMarks: 20, 
-        passTheoryMarks: 28, 
-        passPracticalMarks: 7 
-      },
-      { 
-        name: 'Science', 
-        code: 'SCI10', 
-        maxTheoryMarks: 80, 
-        maxPracticalMarks: 20, 
-        passTheoryMarks: 28, 
-        passPracticalMarks: 7 
-      }
-    ]);
-    console.log('Subjects seeded:', subjects.map(s => s.name).join(', '));
 
     // 4. Seed Students (Creating 25 students for Class 10-A to test pagination)
     const studentsToInsert = [];
