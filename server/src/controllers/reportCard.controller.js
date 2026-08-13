@@ -1,5 +1,8 @@
 import ReportCard from '../models/reportCard.js';
 import Result from '../models/result.js';
+import mongoose from 'mongoose';
+
+const QUERY_TIMEOUT_MS = 10_000;
 
 // @desc    Submit/Update Report Card Meta Data (Co-Curricular, Remarks, etc.)
 // @route   POST /api/report-cards
@@ -36,12 +39,23 @@ export const getFullReportCard = async (req, res) => {
     const { studentId } = req.params;
     const { exam } = req.query;
 
-    // Fetch academic marks
-    const academicResults = await Result.find({ student: studentId, exam })
-      .populate('subject', 'name code maxTheoryMarks maxPracticalMarks');
+    if (!mongoose.isValidObjectId(studentId)) {
+      return res.status(400).json({ message: 'Invalid student ID' });
+    }
 
-    // Fetch report card meta data
-    const reportCardData = await ReportCard.findOne({ student: studentId, exam });
+    if (!exam) {
+      return res.status(400).json({ message: 'Exam is required' });
+    }
+
+    const [academicResults, reportCardData] = await Promise.all([
+      Result.find({ student: studentId, exam })
+        .populate('subject', 'name code maxTheoryMarks maxPracticalMarks')
+        .lean()
+        .maxTimeMS(QUERY_TIMEOUT_MS),
+      ReportCard.findOne({ student: studentId, exam })
+        .lean()
+        .maxTimeMS(QUERY_TIMEOUT_MS),
+    ]);
 
     if (!academicResults.length && !reportCardData) {
       return res.status(404).json({ message: 'No data found for this student/exam' });
