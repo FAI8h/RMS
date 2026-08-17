@@ -1,4 +1,4 @@
-import { drawCell } from "../helpers/cell.js";
+
 import { drawText } from "../helpers/text.js";
 
 
@@ -8,173 +8,93 @@ export function drawSignatures(
         x,
         y,
         width,
-
         signatures = {},
     }
 ) {
 
-    const height = 75;
-
-    const gap = 15;
-
     const columnWidth =
-        (
-            width -
-            gap * 2
-        ) / 3;
+        width / 3;
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Safety
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        !Number.isFinite(x) ||
-        !Number.isFinite(y) ||
-        !Number.isFinite(width)
-    ) {
-        throw new Error(
-            `Invalid signature coordinates: ${
-                JSON.stringify({
-                    x,
-                    y,
-                    width,
-                })
-            }`
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Signature columns
-    |--------------------------------------------------------------------------
-    */
-
-    const positions = [
+    const labels = [
         {
-            x,
-            label:
-                "Class Teacher",
-
+            label: "Class Teacher",
             value:
-                signatures.classTeacher ??
-                "",
+                signatures.classTeacher ?? "",
         },
 
         {
-            x:
-                x +
-                columnWidth +
-                gap,
-
-            label:
-                "Principal",
-
+            label: "Principal",
             value:
-                signatures.principal ??
-                "",
+                signatures.principal ?? "",
         },
 
         {
-            x:
-                x +
-                (
-                    columnWidth +
-                    gap
-                ) * 2,
-
-            label:
-                "Parent",
-
+            label: "Parent",
             value:
-                signatures.parent ??
-                "",
+                signatures.parent ?? "",
         },
     ];
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Draw
-    |--------------------------------------------------------------------------
-    */
+    labels.forEach(
+        (item, index) => {
 
-    for (
-        const item
-        of positions
-    ) {
-
-        drawCell(doc, {
-            x:
-                item.x,
-
-            y,
-
-            width:
-                columnWidth,
-
-            height,
-
-            value: "",
-        });
+            const cellX =
+                x +
+                index *
+                    columnWidth;
 
 
-        drawText(doc, {
-            text:
-                item.value,
+            // Signature
+            drawText(doc, {
+                text:
+                    item.value,
 
-            x:
-                item.x + 5,
+                x:
+                    cellX + 5,
 
-            y:
-                y + 8,
+                y,
 
-            width:
-                columnWidth - 10,
+                width:
+                    columnWidth - 10,
 
-            height: 20,
+                height: 25,
 
-            font:
-                "Helvetica",
+                font: "Helvetica",
 
-            fontSize: 7,
+                fontSize: 8,
 
-            align:
-                "center",
-        });
+                align: "center",
+            });
 
 
-        drawText(doc, {
-            text:
-                item.label,
+            // Label
+            drawText(doc, {
+                text:
+                    item.label,
 
-            x:
-                item.x + 5,
+                x:
+                    cellX + 5,
 
-            y:
-                y + height - 20,
+                y:
+                    y + 28,
 
-            width:
-                columnWidth - 10,
+                width:
+                    columnWidth - 10,
 
-            height: 12,
+                height: 15,
 
-            font:
-                "Helvetica-Bold",
+                font:
+                    "Helvetica-Bold",
 
-            fontSize: 7,
+                fontSize: 7,
 
-            align:
-                "center",
-        });
-    }
-
-
-    return (
-        y +
-        height
+                align: "center",
+            });
+        }
     );
+
+
+    return y + 45;
 }

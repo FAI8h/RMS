@@ -1,19 +1,16 @@
 import { drawCell } from "../helpers/cell.js";
-import { drawSectionTitle } from "../helpers/table.js";
-
 
 const DEFAULT_ITEMS = [
-    "Tidy in Uniform",
+    "Tidiness in Uniform",
     "Personal Hygiene",
     "Self Confidence",
     "Motivated to Learn",
     "Care of Property",
     "Regularity in Work",
-    "Maintenance of Books",
+    "Maintenance of Book",
     "Punctuality",
     "English Conversation Skill",
 ];
-
 
 export function drawPersonalAssessment(
     doc,
@@ -21,197 +18,140 @@ export function drawPersonalAssessment(
         x,
         y,
         width,
+        height,
         data = [],
+        newSessionDate = "",
     }
 ) {
+    const titleH = 30;
+    const headerH = 30;
 
-    const TITLE_HEIGHT = 30;
-    const HEADER_HEIGHT = 30;
-    const ROW_HEIGHT = 30;
-
-
-    drawSectionTitle(doc, {
-        x,
-        y,
-        width,
-        height:
-            TITLE_HEIGHT,
-
-        title:
-            "PERSONAL ASSESSMENT",
-    });
-
-
-    const headerY =
-        y +
-        TITLE_HEIGHT;
-
-
-    const labelWidth =
-        width * 0.55;
-
-    const halfWidth =
-        width * 0.225;
-
-    const annualWidth =
-        width * 0.225;
-
-
-    drawCell(doc, {
-        x,
-        y: headerY,
-
-        width:
-            labelWidth,
-
-        height:
-            HEADER_HEIGHT,
-
-        value:
-            "PARAMETERS",
-
-        font:
-            "Helvetica-Bold",
-
-        fontSize: 7,
-    });
-
-
-    drawCell(doc, {
-        x:
-            x +
-            labelWidth,
-
-        y: headerY,
-
-        width:
-            halfWidth,
-
-        height:
-            HEADER_HEIGHT,
-
-        value:
-            "Half Yearly",
-
-        font:
-            "Helvetica-Bold",
-
-        fontSize: 7,
-    });
-
-
-    drawCell(doc, {
-        x:
-            x +
-            labelWidth +
-            halfWidth,
-
-        y: headerY,
-
-        width:
-            annualWidth,
-
-        height:
-            HEADER_HEIGHT,
-
-        value:
-            "Annual",
-
-        font:
-            "Helvetica-Bold",
-
-        fontSize: 7,
-    });
-
+    const sessionH = 24;
 
     const rows =
         data.length > 0
             ? data
-            : DEFAULT_ITEMS.map(
-                  (name) => ({
-                      name,
-                      halfYearly: "",
-                      annual: "",
-                  })
-              );
+            : DEFAULT_ITEMS.map(name => ({
+                  name,
+                  halfYearly: "",
+                  annual: "",
+              }));
 
+    const rowH =
+        (
+            height -
+            titleH -
+            headerH -
+            sessionH
+        ) / rows.length;
 
-    rows.forEach(
-        (item, index) => {
+    const labelW = width * 0.56;
+    const halfW = width * 0.22;
+    const annualW = width * 0.22;
 
-            const rowY =
-                headerY +
-                HEADER_HEIGHT +
-                index *
-                    ROW_HEIGHT;
+    // Title
+    drawCell(doc, {
+        x,
+        y,
+        width,
+        height: titleH,
+        value: "PERSONAL ASSESSMENT",
+        font: "Helvetica-Bold",
+        fontSize: 9,
+    });
 
+    const headerY =
+        y + titleH;
 
-            drawCell(doc, {
-                x,
-                y: rowY,
+    // Header
+    drawCell(doc, {
+        x,
+        y: headerY,
+        width: labelW,
+        height: headerH,
+        value: "PARAMETERS",
+        font: "Helvetica-Bold",
+        fontSize: 7,
+    });
 
-                width:
-                    labelWidth,
+    drawCell(doc, {
+        x: x + labelW,
+        y: headerY,
+        width: halfW,
+        height: headerH,
+        value: "Half Yearly",
+        font: "Helvetica-Bold",
+        fontSize: 8,
+    });
 
-                height:
-                    ROW_HEIGHT,
+    drawCell(doc, {
+        x:
+            x +
+            labelW +
+            halfW,
+        y: headerY,
+        width: annualW,
+        height: headerH,
+        value: "Annual",
+        font: "Helvetica-Bold",
+        fontSize: 8,
+    });
 
-                value:
-                    item.name ?? "",
+    // Rows
+    rows.forEach((item, index) => {
+        const rowY =
+            headerY +
+            headerH +
+            index * rowH;
 
-                fontSize: 6.5,
+        drawCell(doc, {
+            x,
+            y: rowY,
+            width: labelW,
+            height: rowH,
+            value: item.name ?? "",
+            fontSize: 8,
+            align: "left",
+        });
 
-                align: "left",
-            });
+        drawCell(doc, {
+            x: x + labelW,
+            y: rowY,
+            width: halfW,
+            height: rowH,
+            value: item.halfYearly ?? "",
+            fontSize: 8,
+        });
 
+        drawCell(doc, {
+            x:
+                x +
+                labelW +
+                halfW,
+            y: rowY,
+            width: annualW,
+            height: rowH,
+            value: item.annual ?? "",
+            fontSize: 8,
+        });
+    });
 
-            drawCell(doc, {
-                x:
-                    x +
-                    labelWidth,
+    // Bottom session line
+    const sessionY =
+        y +
+        height -
+        sessionH;
 
-                y: rowY,
-
-                width:
-                    halfWidth,
-
-                height:
-                    ROW_HEIGHT,
-
-                value:
-                    item.halfYearly ?? "",
-
-                fontSize: 7,
-            });
-
-
-            drawCell(doc, {
-                x:
-                    x +
-                    labelWidth +
-                    halfWidth,
-
-                y: rowY,
-
-                width:
-                    annualWidth,
-
-                height:
-                    ROW_HEIGHT,
-
-                value:
-                    item.annual ?? "",
-
-                fontSize: 7,
-            });
-        }
-    );
-
-
-    return (
-        headerY +
-        HEADER_HEIGHT +
-        rows.length *
-            ROW_HEIGHT
-    );
+    drawCell(doc, {
+        x,
+        y: sessionY,
+        width,
+        height: sessionH,
+        value:
+            `NEW ACADEMIC SESSION BEGINS ON ${
+                newSessionDate || ""
+            }`,
+        font: "Helvetica-Bold",
+        fontSize: 7,
+    });
 }

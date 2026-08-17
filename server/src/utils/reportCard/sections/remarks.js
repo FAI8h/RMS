@@ -1,6 +1,4 @@
 import { drawCell } from "../helpers/cell.js";
-import { drawText } from "../helpers/text.js";
-
 
 export function drawRemarks(
     doc,
@@ -8,199 +6,176 @@ export function drawRemarks(
         x,
         y,
         width,
-
         remarks = {},
-
         finalResult = "",
+        mode,
     }
 ) {
+    if (mode === "halfYearly") {
+        const titleH = 22;
+        const boxH = 82;
 
-    const BOX_HEIGHT = 85;
+        drawCell(doc, {
+            x,
+            y,
+            width,
+            height: boxH,
+            value: "",
+        });
 
-    const TITLE_HEIGHT = 25;
+        drawCell(doc, {
+            x,
+            y,
+            width,
+            height: titleH,
+            value: "HALF YEARLY",
+            font: "Helvetica-Bold",
+            fontSize: 8,
+        });
 
-    const GAP = 15;
+        doc
+            .font("Helvetica-Bold")
+            .fontSize(7)
+            .text(
+                "Remarks:",
+                x + 8,
+                y + titleH + 10,
+                {
+                    width: 50,
+                    lineBreak: false,
+                }
+            );
 
+        doc
+            .font("Helvetica")
+            .fontSize(8)
+            .text(
+                remarks.halfYearly ?? "",
+                x + 55,
+                y + titleH + 8,
+                {
+                    width: width - 65,
+                    height: 25,
+                    lineBreak: false,
+                    ellipsis: true,
+                }
+            );
 
-    /*
-    |--------------------------------------------------------------------------
-    | Half Yearly
-    |--------------------------------------------------------------------------
-    */
+        const signatureY =
+            y + boxH - 25;
+
+        const third =
+            width / 3;
+
+        [
+            "Class Teacher",
+            "Principal",
+            "Parent",
+        ].forEach((label, i) => {
+            doc
+                .font("Helvetica")
+                .fontSize(6.5)
+                .text(
+                    label,
+                    x + i * third,
+                    signatureY,
+                    {
+                        width: third,
+                        align: "center",
+                        lineBreak: false,
+                    }
+                );
+        });
+
+        return {
+            bottom: y + boxH,
+        };
+    }
+
+    // ---------------------------------------------------------
+    // ANNUAL
+    // ---------------------------------------------------------
+
+    const titleH = 22;
+    const boxH = 92;
 
     drawCell(doc, {
         x,
         y,
-
         width,
-        height:
-            BOX_HEIGHT,
-
+        height: boxH,
         value: "",
     });
-
 
     drawCell(doc, {
         x,
         y,
-
         width,
-        height:
-            TITLE_HEIGHT,
-
-        value:
-            "HALF YEARLY",
-
-        font:
-            "Helvetica-Bold",
-
+        height: titleH,
+        value: "ANNUAL",
+        font: "Helvetica-Bold",
         fontSize: 8,
     });
 
-
-    drawText(doc, {
-        text:
-            remarks.halfYearly ?? "",
-
-        x:
+    doc
+        .font("Helvetica-Bold")
+        .fontSize(7)
+        .text(
+            "Final Exam Result:",
             x + 8,
+            y + titleH + 12,
+            {
+                width: 100,
+                lineBreak: false,
+            }
+        );
 
-        y:
-            y + TITLE_HEIGHT + 8,
+    doc
+        .font("Helvetica")
+        .fontSize(8)
+        .text(
+            finalResult,
+            x + 108,
+            y + titleH + 10,
+            {
+                width: width - 116,
+                lineBreak: false,
+                ellipsis: true,
+            }
+        );
 
-        width:
-            width - 16,
+    const signatureY =
+        y + boxH - 25;
 
-        height:
-            BOX_HEIGHT -
-            TITLE_HEIGHT -
-            12,
+    doc
+        .font("Helvetica")
+        .fontSize(6.5)
+        .text(
+            "Principal's Signature",
+            x,
+            signatureY,
+            {
+                width: width / 2,
+                align: "center",
+                lineBreak: false,
+            }
+        );
 
-        font:
-            "Helvetica",
-
-        fontSize: 7,
-
-        align: "left",
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Annual
-    |--------------------------------------------------------------------------
-    */
-
-    const annualY =
-        y +
-        BOX_HEIGHT +
-        GAP;
-
-
-    drawCell(doc, {
-        x,
-        y: annualY,
-
-        width,
-        height:
-            BOX_HEIGHT,
-
-        value: "",
-    });
-
-
-    drawCell(doc, {
-        x,
-        y: annualY,
-
-        width,
-        height:
-            TITLE_HEIGHT,
-
-        value:
-            "ANNUAL",
-
-        font:
-            "Helvetica-Bold",
-
-        fontSize: 8,
-    });
-
-
-    drawText(doc, {
-        text:
-            remarks.annual ?? "",
-
-        x:
-            x + 8,
-
-        y:
-            annualY +
-            TITLE_HEIGHT +
-            8,
-
-        width:
-            width - 16,
-
-        height:
-            BOX_HEIGHT -
-            TITLE_HEIGHT -
-            12,
-
-        font:
-            "Helvetica",
-
-        fontSize: 7,
-
-        align: "left",
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Final result
-    |--------------------------------------------------------------------------
-    */
-
-    drawText(doc, {
-        text:
-            `Final Exam Result: ${
-                finalResult ?? ""
-            }`,
-
-        x:
-            x + 8,
-
-        y:
-            annualY +
-            BOX_HEIGHT -
-            18,
-
-        width:
-            width - 16,
-
-        height: 12,
-
-        font:
-            "Helvetica-Bold",
-
-        fontSize: 7,
-
-        align: "left",
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | IMPORTANT
-    |--------------------------------------------------------------------------
-    */
+    doc
+        .font("Helvetica")
+        .fontSize(6.5)
+        .text(
+            "Class Teacher's Signature",
+            x + width / 2,
+            signatureY,
+            {
+                width: width / 2,
+                align: "center",
+                lineBreak: false,
+            }
+        );
 
     return {
-        annualY,
-
-        annualBottom:
-            annualY +
-            BOX_HEIGHT,
+        bottom: y + boxH,
     };
 }
