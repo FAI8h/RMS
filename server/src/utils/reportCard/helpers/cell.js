@@ -5,106 +5,64 @@ export function drawCell(
         y,
         width,
         height,
-
         value = "",
-
         font = "Helvetica",
         fontSize = 7,
-
         align = "center",
-
-        padding = 3,
+        bold = false,
     }
 ) {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Safety
-    |--------------------------------------------------------------------------
-    */
-
-    if (!Number.isFinite(x)) {
+    if (
+        !Number.isFinite(x) ||
+        !Number.isFinite(y) ||
+        !Number.isFinite(width) ||
+        !Number.isFinite(height)
+    ) {
         throw new Error(
-            `drawCell: invalid x = ${x}`
+            `Invalid cell geometry: ${JSON.stringify({
+                x,
+                y,
+                width,
+                height,
+            })}`
         );
     }
 
-    if (!Number.isFinite(y)) {
-        throw new Error(
-            `drawCell: invalid y = ${y}`
-        );
-    }
-
-    if (!Number.isFinite(width)) {
-        throw new Error(
-            `drawCell: invalid width = ${width}`
-        );
-    }
-
-    if (!Number.isFinite(height)) {
-        throw new Error(
-            `drawCell: invalid height = ${height}`
-        );
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Border
-    |--------------------------------------------------------------------------
-    */
-
+    // Border
     doc
-        .rect(
-            x,
-            y,
-            width,
-            height
-        )
+        .rect(x, y, width, height)
         .stroke();
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Text
-    |--------------------------------------------------------------------------
-    */
-
     const text =
-        value === null ||
-        value === undefined
+        value === null || value === undefined
             ? ""
             : String(value);
 
+    if (!text) return;
+
+    let size = fontSize;
+
+    const maxWidth = width - 6;
+
+    // Automatically shrink long one-line text
+    while (
+        size > 5 &&
+        doc
+            .font(font)
+            .fontSize(size)
+            .widthOfString(text) > maxWidth
+    ) {
+        size -= 0.25;
+    }
 
     doc
         .font(font)
-        .fontSize(fontSize)
-        .fillColor("black")
-        .text(
-            text,
-            x + padding,
-            y + padding,
-            {
-                width:
-                    Math.max(
-                        1,
-                        width -
-                        padding * 2
-                    ),
-
-                height:
-                    Math.max(
-                        1,
-                        height -
-                        padding * 2
-                    ),
-
-                align,
-
-                lineGap: 0,
-
-                lineBreak: true,
-            }
-        );
+        .fontSize(size)
+        .text(text, x + 3, y + 3, {
+            width: maxWidth,
+            height: height - 6,
+            align,
+            lineBreak: false,
+            ellipsis: true,
+        });
 }
