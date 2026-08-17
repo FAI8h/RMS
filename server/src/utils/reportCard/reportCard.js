@@ -6,9 +6,7 @@ import { drawPersonalAssessment } from "./sections/personalAssessment.js";
 import { drawRemarks } from "./sections/remarks.js";
 import { drawSignatures } from "./sections/signatures.js";
 
-
 export function createReportCard(data = {}) {
-
     const doc = new PDFDocument({
         size: "A4",
         layout: "landscape",
@@ -16,24 +14,7 @@ export function createReportCard(data = {}) {
         autoFirstPage: true,
     });
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAGE 1
-    |--------------------------------------------------------------------------
-    */
-
-    drawPageOne(
-        doc,
-        data
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PAGE 2
-    |--------------------------------------------------------------------------
-    */
+    drawPage1(doc, data);
 
     doc.addPage({
         size: "A4",
@@ -41,205 +22,109 @@ export function createReportCard(data = {}) {
         margin: 0,
     });
 
-
-    drawPageTwo(
-        doc,
-        data
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | IMPORTANT
-    |
-    | DO NOT doc.end() here.
-    |
-    | Controller owns the stream.
-    |--------------------------------------------------------------------------
-    */
+    drawPage2(doc, data);
 
     return doc;
 }
 
+function drawPage1(doc, data) {
+    const PAGE_W = doc.page.width;
+    const PAGE_H = doc.page.height;
 
-/*
-|--------------------------------------------------------------------------
-| PAGE 1
-|--------------------------------------------------------------------------
-*/
+    const MARGIN = 25;
+    const CONTENT_W = PAGE_W - MARGIN * 2;
 
-function drawPageOne(doc, data) {
+    let y = MARGIN;
 
-    const pageWidth =
-        doc.page.width;
+    // ---------------------------------------------------------
+    // ACADEMIC
+    // ---------------------------------------------------------
 
-    const margin = 30;
-
-    const gap = 20;
-
-    const leftWidth = 550;
-
-    const rightWidth =
-        pageWidth -
-        margin -
-        leftWidth -
-        gap -
-        margin;
-
-
-    const leftX =
-        margin;
-
-    const rightX =
-        leftX +
-        leftWidth +
-        gap;
-
-
-    const topY =
-        25;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Academic
-    |--------------------------------------------------------------------------
-    */
-
-    drawAcademicTable(doc, {
-        x: leftX,
-        y: topY,
-        width: leftWidth,
-
-        academic:
-            data.academic ?? [],
-
-        grandTotal:
-            data.grandTotal ?? {},
+    y = drawAcademicTable(doc, {
+        x: MARGIN,
+        y,
+        width: CONTENT_W,
+        academic: data.academic ?? [],
+        grandTotal: data.grandTotal ?? {},
     });
 
+    y += 10;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Co-curricular
-    |--------------------------------------------------------------------------
-    */
+    // ---------------------------------------------------------
+    // HALF YEARLY
+    // ---------------------------------------------------------
 
-    drawCoCurricular(doc, {
-        x: rightX,
-        y: topY,
-        width: rightWidth,
-
-        data:
-            data.coCurricular ?? [],
+    const remarks = drawRemarks(doc, {
+        x: MARGIN,
+        y,
+        width: CONTENT_W,
+        remarks: data.remarks ?? {},
+        mode: "halfYearly",
     });
+
+    y = remarks.bottom + 8;
+
+    // ---------------------------------------------------------
+    // ANNUAL
+    // ---------------------------------------------------------
+
+    drawRemarks(doc, {
+        x: MARGIN,
+        y,
+        width: CONTENT_W,
+        remarks: data.remarks ?? {},
+        finalResult: data.finalResult ?? "",
+        mode: "annual",
+    });
+
+    // Hard safety check
+    if (y > PAGE_H - MARGIN) {
+        throw new Error(
+            `PAGE 1 overflow: y=${y}, pageHeight=${PAGE_H}`
+        );
+    }
 }
 
+function drawPage2(doc, data) {
+    const PAGE_W = doc.page.width;
+    const PAGE_H = doc.page.height;
 
-/*
-|--------------------------------------------------------------------------
-| PAGE 2
-|--------------------------------------------------------------------------
-*/
+    const MARGIN = 25;
+    const GAP = 15;
 
-function drawPageTwo(doc, data) {
+    const CONTENT_W = PAGE_W - MARGIN * 2;
+    const CONTENT_H = PAGE_H - MARGIN * 2;
 
-    const pageWidth =
-        doc.page.width;
+    const LEFT_W = (CONTENT_W - GAP) * 0.52;
+    const RIGHT_W = CONTENT_W - GAP - LEFT_W;
 
-    const margin = 30;
+    const leftX = MARGIN;
+    const rightX = MARGIN + LEFT_W + GAP;
 
-    const width =
-        pageWidth -
-        margin * 2;
+    const topY = MARGIN;
 
+    // ---------------------------------------------------------
+    // LEFT — CO-CURRICULAR
+    // ---------------------------------------------------------
 
-    const x =
-        margin;
-
-
-    let y =
-        25;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Personal Assessment
-    |--------------------------------------------------------------------------
-    */
-    
-    
-
-    const personalBottom =
-        drawPersonalAssessment(doc, {
-            x,
-            y,
-            width,
-
-            data:
-                data.personalAssessment ?? [],
-        });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Remarks
-    |--------------------------------------------------------------------------
-    */
-
-    const remarksResult =
-        drawRemarks(doc, {
-            x,
-            y:
-                personalBottom + 15,
-
-            width,
-
-            remarks:
-                data.remarks ?? {},
-
-            finalResult:
-                data.finalResult ?? "",
-        });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Signatures
-    |--------------------------------------------------------------------------
-    */
-
-    drawSignatures(doc, {
-        x,
-        y:
-            remarksResult.annualBottom + 20,
-
-        width,
-
-        signatures:
-            data.signatures ?? {},
+    drawCoCurricular(doc, {
+        x: leftX,
+        y: topY,
+        width: LEFT_W,
+        height: CONTENT_H,
+        data: data.coCurricular ?? [],
     });
 
+    // ---------------------------------------------------------
+    // RIGHT — PERSONAL ASSESSMENT
+    // ---------------------------------------------------------
 
-    /*
-    |--------------------------------------------------------------------------
-    | Session
-    |--------------------------------------------------------------------------
-    */
-
-    doc
-        .font("Helvetica-Bold")
-        .fontSize(7)
-        .text(
-            `NEW ACADEMIC SESSION BEGINS ON ${
-                data.newSessionDate ?? ""
-            }`,
-            x,
-            doc.page.height - 22,
-            {
-                width,
-                align: "center",
-                lineBreak: false,
-            }
-        );
+    drawPersonalAssessment(doc, {
+        x: rightX,
+        y: topY,
+        width: RIGHT_W,
+        height: CONTENT_H,
+        data: data.personalAssessment ?? [],
+        newSessionDate: data.newSessionDate ?? "",
+    });
 }
