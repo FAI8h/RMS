@@ -12,7 +12,7 @@ export function drawText(
 
         font = "Helvetica",
 
-        fontSize = 7,
+        fontSize = 18,
 
         align = "left",
     }

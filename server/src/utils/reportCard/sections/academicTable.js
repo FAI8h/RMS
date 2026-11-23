@@ -118,7 +118,7 @@ export function drawAcademicTable(
         height: titleH,
         value: "ACADEMIC ACHIEVEMENT",
         font: "Helvetica-Bold",
-        fontSize: 9,
+        fontSize: 16,
     });
 
     const tableY = y + titleH;
