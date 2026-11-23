@@ -1,6 +1,8 @@
 export const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500;
-  let message = err.message || "Internal Server Error!";
+  let message = statusCode >= 500
+    ? "Internal Server Error!"
+    : (err.message || "Request failed");
   let errors = err.errors || [];
 
   if (err.name === "CastError") {
