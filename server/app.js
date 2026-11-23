@@ -8,6 +8,8 @@ import masterRoutes from './src/routes/master.routes.js';
 import teacherRoutes from './src/routes/teacher.routes.js';
 import resultRoutes from './src/routes/result.routes.js';
 import reportCardRoutes from './src/routes/reportCard.routes.js';
+import examRoutes from './src/routes/exam.routes.js';
+import { errorHandler } from './src/middlewares/errorHandler.js';
 
 const app = express();
 
@@ -22,6 +24,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api', masterRoutes);
+app.use('/api/exam', examRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/report-cards', reportCardRoutes);
@@ -29,5 +32,8 @@ app.use('/api/report-cards', reportCardRoutes);
 app.get('/', (req, res) => {
   res.send('School Result Management System API is running...');
 });
+
+// Keep this after routes so thrown/rejected route errors reach the handler.
+app.use(errorHandler);
 
 export default app;
