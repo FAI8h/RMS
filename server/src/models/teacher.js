@@ -5,7 +5,8 @@ const teacherSchema = new mongoose.Schema({
   accessCode: { type: String, required: true, unique: true }, // Given by Admin
   role: {
     type: String,
-    enum : ["Teacher","ClassTeacher"],
+    enum : {values:["Teacher","ClassTeacher"]
+    },
     default: 'Teacher'
   }
 }, { timestamps: true });
