@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Patrick+Hand&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #34d399;
+  --brand-deep: #10b981;
+  --ink: #0f172a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background-color: #eef2f6;
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+/* Warm "living room" background scene */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 60% at 50% -10%, #fdf3e7 0%, transparent 55%),
+    radial-gradient(90% 50% at 90% 90%, #b7e7d3 0%, transparent 50%),
+    radial-gradient(80% 50% at 0% 80%, #f4d9c6 0%, transparent 55%),
+    linear-gradient(160deg, #eef6f1 0%, #e7eef2 55%, #eef2f6 100%);
+}
+
+.scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.55), transparent 40%),
+    radial-gradient(circle at 75% 70%, rgba(16, 185, 129, 0.12), transparent 45%);
+  backdrop-filter: none;
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 18px 40px -18px rgba(15, 23, 42, 0.28);
+  }
+  .glass-deep {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 34px -18px rgba(15, 23, 42, 0.22);
+  }
+  .header-gradient {
+    background: linear-gradient(135deg, #0f766e 0%, #065f46 45%, #134e4a 100%);
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, #0f766e, #34d399);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .sidebar-shell {
+    background:
+      radial-gradient(130% 90% at -15% -5%, rgba(16, 185, 129, 0.12) 0%, transparent 55%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(240, 247, 244, 0.94) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      22px 0 46px -26px rgba(15, 23, 42, 0.28);
+  }
+}
+
+/* slim scrollbars for the app frame */
+.nice-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.nice-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border-radius: 8px;
+}
+.nice-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* slide-up animation for the custom keypad */
+@keyframes keypadSlideUp {
+  from {
+    transform: translate(-50%, 110%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+.keypad-slide-up {
+  animation: keypadSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Report card / print styles */
+.report-frame { max-width: 210mm; }
+.report-page {
+  width: 210mm;
+  height: 297mm;
+  background: linear-gradient(180deg,#fff 0%, #fafafa 100%);
+  border: 1px solid #111;
+  box-shadow: 0 6px 18px rgba(10,10,10,0.08);
+  background-image: linear-gradient(transparent 0, transparent 100%),
+    radial-gradient(circle at 20% 10%, rgba(0,0,0,0.01) 0px, transparent 20px);
+  background-color: #fff;
+  -webkit-print-color-adjust: exact;
+}
+.report-inner { background: transparent; }
+.report-title { text-align: left; font-size: 18px; font-weight: 800; letter-spacing: 1px; margin-bottom: 6px; }
+.report-subtitle { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.marks-table th.b, .activity-table th.b { border-bottom: 1px solid #111; padding: 6px; text-align: left; }
+.marks-table td, .activity-table td { border-bottom: 1px dashed #bbb; padding: 6px; vertical-align: middle; }
+.handwritten { font-family: 'Patrick Hand', cursive; color: #0b63d6; font-weight: 700; font-size: 13px; }
+.handwritten.small-sign { font-size: 12px; }
+.handwritten-cell { min-height: 44px; }
+.signature-line { border-top: 1px solid #111; padding-top: 6px; font-size: 12px; }
+.small-sign { margin-top: 4px; }
+.stamp-svg { opacity: 0.95; filter: drop-shadow(0 1px 0 rgba(0,0,0,0.12)); }
+
+/* paper-like subtle texture */
+.report-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(0deg, rgba(0,0,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.01) 1px, transparent 1px);
+  background-size: 100% 120px, 120px 100%;
+  mix-blend-mode: multiply;
+}
+
+@media print {
+  body { background: white; }
+  .report-page { box-shadow: none; margin: 0 auto; }
+  @page { size: A4 portrait; margin: 10mm; }
+}
