@@ -15,6 +15,8 @@ const protect = async (req, res, next) => {
       // Attach user to request (check both Admin and Teacher collections)
       let user = await Admin.findById(decoded.id).select('-password') || 
                  await Teacher.findById(decoded.id).select('-password');
+                //  console.log("authed user : ", user);
+                 
                  
       if (!user) {
         return res.status(401).json({ message: 'Not authorized, user not found' });
