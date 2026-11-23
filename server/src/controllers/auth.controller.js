@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import Admin from '../models/admin.js';
 import Teacher from '../models/teacher.js';
 
+import { ApiResponse } from '../utils/apiResponse.js';
+
 // @desc    Login user (Admin or Teacher)
 // @route   POST /api/auth/login
 // @access  Public
@@ -78,3 +80,25 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+export const logout = async (req, res) => {
+    return res
+        .status(200)
+        .clearCookie('accessToken', options)
+        .json(new ApiResponse(200, {}));
+}
+
+export const getCurrentUser = async (req, res) => {
+	return res
+	.status(200)
+	.json(
+		new ApiResponse(
+			200,
+			{
+				_id : req.user._id,
+				name: req.user.name,
+				role: req.user.role
+			}
+		)
+	)
+}
