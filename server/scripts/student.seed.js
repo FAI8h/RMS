@@ -1,11 +1,8 @@
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import {connectDB} from '../src/config/db.js'; // Adjust path if needed based on your new structure
 import Student from '../src/models/student.js';
 
-dotenv.config({
-  path: '../.env'
-});
+dotenv.config();
 await connectDB();
 
 const seedData = async () => {
